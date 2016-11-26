@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/lodash/4.16.2/lodash.min.js"></script>
+
+    <script src="datamaps.all.hires.min.js"></script>
+    <script src="zoom.js"></script>
+
+    <div id="main-map" style="position: relative; width: 100%; height: 100%;"></div>
+  </head>
+
+  <script>
+
+    var empColors = {'EMP sample': 'white',
+                     'Host-associated': '#fb9a99',
+                     'Free-living': '#e31a1c',
+                     'Animal': '#b2df8a',
+                     'Plant': '#33a02c',
+                     'Non-saline': '#a6cee3',
+                     'Saline': '#1f78b4',
+                     'Aerosol (non-saline)': 'lightgrey',
+                     'Animal corpus': 'yellow',
+                     'Animal distal gut': 'saddlebrown',
+                     'Animal proximal gut': 'tan',
+                     'Animal secretion': 'sandybrown',
+                     'Animal surface': 'DarkGoldenRod',
+                     'Hypersaline (saline)': 'lightskyblue',
+                     'Intertidal (saline)': 'PaleTurquoise',
+                     'Mock community': 'fuchsia',
+                     'Plant corpus': 'lawngreen',
+                     'Plant rhizosphere': 'darkgreen',
+                     'Plant surface': 'MediumSpringGreen',
+                     'Sediment (non-saline)': 'lightsalmon',
+                     'Sediment (saline)': 'tomato',
+                     'Soil (non-saline)': 'red',
+                     'Sterile water blank': 'violet',
+                     'Surface (non-saline)': 'black',
+                     'Surface (saline)': 'dimgrey',
+                     'Water (non-saline)': 'navy',
+                     'Water (saline)': 'royalblue'};
+
+
+    document.getElementById('main-map').style['background-color'] = 'black'
+
+    var edgeList = {{ edge_data }};
+
+    var world = new Datamap('main-map');
+
+    // filter NaNs
+    edgeList = _.filter(edgeList, function(x) {return !(isNaN(x.origin.latitude) ||
+                                                        isNaN(x.origin.longitude) ||
+                                                        isNaN(x.destination.latitude) ||
+                                                        isNaN(x.destination.longitude))})
+
+    // Arcs coordinates can be specified explicitly with latitude/longtitude,
+    // or just the geographic center of the state/country.
+    world.instance.arc(edgeList,
+              {strokeWidth: 0.2,
+               popupOnHover: true,
+               popupTemplate: function(geography, data){
+                 var div = '<div class="hoverinfo">';
+                   div += '<strong>From</strong>: ' + data.origin.empo_3;
+                   div += '<br>'
+                   div += '<strong>To</strong>: ' + data.destination.empo_3;
+                   div += '</div>';
+                   return div;
+               },
+               arcSharpness: 0.1,
+               animationSpeed: 0,
+              });
+  </script>
+
+</html>
