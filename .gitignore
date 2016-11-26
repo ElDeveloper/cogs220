@@ -46,3 +46,4 @@ doc/source/scripts/
 doc/source/generated/
 
 .ipynb_checkpoints/*
+examples/
