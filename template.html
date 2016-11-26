@@ -10,40 +10,49 @@
     <div id="main-map" style="position: relative; width: 100%; height: 100%;"></div>
     <script>
       // https://gist.github.com/bobspace/2712980
-      var colors = _.shuffle(["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","Black","BlanchedAlmond","Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGrey","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","Yellow","YellowGreen"]);
 
       // zooming features https://jsfiddle.net/wunderbart/Lom3b0gb/
-      document.getElementById('main-map').style['background-color'] = 'white'
+      document.getElementById('main-map').style['background-color'] = 'black'
       var edgeList = {{ edge_data }};
 
       var world = new Datamap({
         element: document.getElementById("main-map"),
         //scope: 'usa',
         fills: {
-          defaultFill: "white",
+          defaultFill: "black",
         },
         geographyConfig: {
           borderColor: '#6D6E71',
-          highlightFillColor: '#8dc63f',
+          // highlightFillColor: '#8dc63f',
+          highlightFillColor: '#6D6E71',
           highlightBorderColor: '#669b34'
         }
       });
 
-      var taxa = _.uniq(_.map(edgeList, function(x){return x.taxonomy.c}))
+      // var taxa = _.uniq(_.map(edgeList, function(x){return x.taxonomy.c}))
       
-      edgeList = _.map(edgeList, function(x){
-        x.options = {};
-        x['options'].strokeColor = colors[taxa.indexOf(x.taxonomy.c)];
-        return x;
-      });
+      // filter NaNs
+      edgeList = _.filter(edgeList, function(x) {return !(isNaN(x.origin.latitude) ||
+                                                          isNaN(x.origin.longitude) ||
+                                                          isNaN(x.destination.latitude) ||
+                                                          isNaN(x.destination.longitude))})
 
       // Arcs coordinates can be specified explicitly with latitude/longtitude,
       // or just the geographic center of the state/country.
       world.arc(edgeList,
-                {strokeWidth: 0.1,
-                 arcSharpness: 1.4,
+                {strokeWidth: 0.2,
+                 popupOnHover: true,
+                 popupTemplate: function(geography, data){
+                   var div = '<div class="hoverinfo">';
+                     div += '<strong>From</strong>: ' + data.origin.empo_3;
+                     div += '<br>'
+                     div += '<strong>To</strong>: ' + data.destination.empo_3;
+                     div += '</div>';
+                     return div;
+                 },
+                 arcSharpness: 0.1,
                  strokeColor: '#8dc63f',
-                 animationSpeed: 5000,
+                 animationSpeed: 10000,
                 });
     </script>
   </body>
