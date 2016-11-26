@@ -8,10 +8,16 @@
     <script src="datamaps.all.hires.min.js"></script>
     <script src="zoom.js"></script>
 
-    <div id="main-map" style="position: relative; width: 100%; height: 100%;"></div>
+    <div id="main-map" style="position: absolute; top:0; left:0; width: 100%; height: 100%; background-color: black;"></div>
   </head>
 
   <script>
+    var edgeList = {{ edge_data }};
+    // filter NaNs
+    edgeList = _.filter(edgeList, function(x) {return !(isNaN(x.origin.latitude) ||
+                                                        isNaN(x.origin.longitude) ||
+                                                        isNaN(x.destination.latitude) ||
+                                                        isNaN(x.destination.longitude))})
 
     var empColors = {'EMP sample': 'white',
                      'Host-associated': '#fb9a99',
@@ -41,22 +47,25 @@
                      'Water (non-saline)': 'navy',
                      'Water (saline)': 'royalblue'};
 
+    var world = new ZDatamaps({
+        scope: 'world',
+        element: document.getElementById('main-map'),
+        projection: 'mercator',
 
-    document.getElementById('main-map').style['background-color'] = 'black'
+        fills: {
+          defaultFill: "black",
+        },
 
-    var edgeList = {{ edge_data }};
-
-    var world = new Datamap('main-map');
-
-    // filter NaNs
-    edgeList = _.filter(edgeList, function(x) {return !(isNaN(x.origin.latitude) ||
-                                                        isNaN(x.origin.longitude) ||
-                                                        isNaN(x.destination.latitude) ||
-                                                        isNaN(x.destination.longitude))})
+        geographyConfig: {
+          borderColor: '#6D6E71',
+          highlightFillColor: 'none',
+          highlightBorderColor: '#669b34'
+        }
+    });
 
     // Arcs coordinates can be specified explicitly with latitude/longtitude,
     // or just the geographic center of the state/country.
-    world.instance.arc(edgeList,
+    world.instance.arc([],
               {strokeWidth: 0.2,
                popupOnHover: true,
                popupTemplate: function(geography, data){

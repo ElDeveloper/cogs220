@@ -193,29 +193,14 @@ Zoom.prototype._getNextScale = function(direction) {
   return scaleSet[shift];
 };
 
-function Datamap(container) {
-  this.$container = $("#" + container);
-  this.instance = new Datamaps({
-    scope: 'world',
-    element: this.$container.get(0),
-    projection: 'mercator',
-    done: this._handleMapReady.bind(this),
+function ZDatamaps(options) {
+  this.$container = $(options.element);
+  options.done = this._handleMapReady.bind(this);
 
-    fills: {
-      defaultFill: "black",
-    },
-    geographyConfig: {
-      borderColor: '#6D6E71',
-      // highlightFillColor: '#8dc63f',
-      highlightFillColor: '#6D6E71',
-      highlightBorderColor: '#669b34'
-    },
-
-
-  });
+  this.instance = new Datamaps(options);
 }
 
-Datamap.prototype._handleMapReady = function(datamap) {
+ZDatamaps.prototype._handleMapReady = function(datamap) {
   this.zoom = new Zoom({
     $container: this.$container,
     datamap: datamap
