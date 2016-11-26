@@ -5,87 +5,160 @@
         background-color: black;
       }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="https://d3js.org/topojson.v1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/lodash/4.16.2/lodash.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="vendor/jquery-ui/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/jquery-ui/jquery-ui.theme.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/jquery-ui/jquery-ui.structure.min.css">
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="vendor/jquery-ui/jquery-ui.min.js"></script>
+
+    <script src="vendor/d3/d3.v3.min.js"></script>
+    <script src="vendor/d3/topojson.v1.min.js"></script>
+    <script src="vendor/lodash/lodash.min.js"></script>
 
     <script src="datamaps.all.hires.min.js"></script>
     <script src="zoom.js"></script>
-
-    <div id="main-map" style="position: absolute; top:0; left:0; width: 100%; height: 100%; background-color: black;"></div>
   </head>
+  <body>
 
-  <script>
-    var edgeList = {{ edge_data }};
-    // filter NaNs
-    edgeList = _.filter(edgeList, function(x) {return !(isNaN(x.origin.latitude) ||
-                                                        isNaN(x.origin.longitude) ||
-                                                        isNaN(x.destination.latitude) ||
-                                                        isNaN(x.destination.longitude))})
+    <div id='introduction' style='background-color:#6D6E71;color:white;'>
 
-    var empColors = {// 'EMP sample': 'white',
-                     // 'Host-associated': '#fb9a99',
-                     // 'Free-living': '#e31a1c',
-                     // 'Animal': '#b2df8a',
-                     // 'Plant': '#33a02c',
-                     // 'Non-saline': '#a6cee3',
-                     'Saline': '#1f78b4',
-                     'Aerosol (non-saline)': 'lightgrey',
-                     'Animal corpus': 'yellow',
-                     'Animal distal gut': 'saddlebrown',
-                     'Animal proximal gut': 'tan',
-                     'Animal secretion': 'sandybrown',
-                     'Animal surface': 'DarkGoldenRod',
-                     'Hypersaline (saline)': 'lightskyblue',
-                     'Intertidal (saline)': 'PaleTurquoise',
-                     // 'Mock community': 'fuchsia',
-                     'Plant corpus': 'lawngreen',
-                     'Plant rhizosphere': 'darkgreen',
-                     'Plant surface': 'MediumSpringGreen',
-                     'Sediment (non-saline)': 'lightsalmon',
-                     'Sediment (saline)': 'tomato',
-                     'Soil (non-saline)': 'red',
-                     // 'Sterile water blank': 'violet',
-                     // Tell Luke that I changed black to teal
-                     'Surface (non-saline)': 'teal',
-                     'Surface (saline)': 'dimgrey',
-                     'Water (non-saline)': 'navy',
-                     'Water (saline)': 'royalblue'};
-    var legend = new Legend('main-map', empColors)
+      <h1>HTML Ipsum Presents</h1>
 
-    var world = new ZDatamaps({
-        scope: 'world',
-        element: document.getElementById('main-map'),
-        responsive: false,
+      <p><strong>Pellentesque habitant morbi tristique</strong> senectus et
+      netus et malesuada fames ac turpis egestas. Vestibulum tortor quam,
+      feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit
+      amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris
+      placerat eleifend leo. Quisque sit amet est et sapien ullamcorper
+      pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo
+      vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget
+    tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim
+    ac dui.</p>
 
-        fills: {
-          defaultFill: "black",
-        },
+      <h2>Header Level 2</h2>
 
-        geographyConfig: {
-          borderColor: '#6D6E71',
-          highlightFillColor: 'none',
-          highlightBorderColor: '#669b34'
-        }
-    });
+      <ol>
+         <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+         <li>Aliquam tincidunt mauris eu risus.</li>
+      </ol>
 
-    // Arcs coordinates can be specified explicitly with latitude/longtitude,
-    // or just the geographic center of the state/country.
-    world.instance.arc(edgeList,
-              {strokeWidth: 0.2,
-               popupOnHover: true,
-               popupTemplate: function(geography, data){
-                 var div = '<div class="hoverinfo">';
-                   div += '<strong>From</strong>: ' + data.origin.empo_3;
-                   div += '<br>'
-                   div += '<strong>To</strong>: ' + data.destination.empo_3;
-                   div += '</div>';
-                   return div;
-               },
-               arcSharpness: 0.1,
-               animationSpeed: 0,
-              });
-  </script>
+      <blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula
+        molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis
+      mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam.
+      Vivamus pretium ornare est.</p></blockquote>
+
+      <h3>Header Level 3</h3>
+
+      <ul>
+         <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+         <li>Aliquam tincidunt mauris eu risus.</li>
+      </ul>
+
+      <pre><code>
+#header h1 a {
+        display: block;
+        width: 300px;
+        height: 80px;
+      }
+      </code></pre>
+
+
+    </div>
+    <div id="main-map" style="position: absolute; top:0; left:0; width: 100%; height: 100%; background-color: black;"></div>
+    <script>
+      var edgeList = {{ edge_data }};
+      // filter NaNs
+      edgeList = _.filter(edgeList, function(x) {return !(isNaN(x.origin.latitude) ||
+                                                          isNaN(x.origin.longitude) ||
+                                                          isNaN(x.destination.latitude) ||
+                                                          isNaN(x.destination.longitude))})
+
+      var empColors = {// 'EMP sample': 'white',
+                       // 'Host-associated': '#fb9a99',
+                       // 'Free-living': '#e31a1c',
+                       // 'Animal': '#b2df8a',
+                       // 'Plant': '#33a02c',
+                       // 'Non-saline': '#a6cee3',
+                       'Saline': '#1f78b4',
+                       'Aerosol (non-saline)': 'lightgrey',
+                       'Animal corpus': 'yellow',
+                       'Animal distal gut': 'saddlebrown',
+                       'Animal proximal gut': 'tan',
+                       'Animal secretion': 'sandybrown',
+                       'Animal surface': 'DarkGoldenRod',
+                       'Hypersaline (saline)': 'lightskyblue',
+                       'Intertidal (saline)': 'PaleTurquoise',
+                       // 'Mock community': 'fuchsia',
+                       'Plant corpus': 'lawngreen',
+                       'Plant rhizosphere': 'darkgreen',
+                       'Plant surface': 'MediumSpringGreen',
+                       'Sediment (non-saline)': 'lightsalmon',
+                       'Sediment (saline)': 'tomato',
+                       'Soil (non-saline)': 'red',
+                       // 'Sterile water blank': 'violet',
+                       // Tell Luke that I changed black to teal
+                       'Surface (non-saline)': 'teal',
+                       'Surface (saline)': 'dimgrey',
+                       'Water (non-saline)': 'navy',
+                       'Water (saline)': 'royalblue',
+                       'Mismatch': 'white'};
+
+      function createMap() {
+        var legend = new Legend('main-map', empColors);
+
+        var world = new ZDatamaps({
+          scope: 'world',
+          element: document.getElementById('main-map'),
+          responsive: false,
+          done: function (){
+            $('#introduction').dialog("close");
+          },
+
+          fills: {
+            defaultFill: "black",
+          },
+
+          geographyConfig: {
+            borderColor: '#6D6E71',
+            highlightFillColor: 'none',
+            highlightBorderColor: '#669b34'
+          }
+        });
+
+        // Arcs coordinates can be specified explicitly with latitude/longtitude,
+        // or just the geographic center of the state/country.
+        world.instance.arc(edgeList,
+            {strokeWidth: 0.2,
+              popupOnHover: true,
+              popupTemplate: function(geography, data){
+                var div = '<div class="hoverinfo">';
+                div += '<strong>From</strong>: ' + data.origin.empo_3;
+                div += '<br>'
+                  div += '<strong>To</strong>: ' + data.destination.empo_3;
+                div += '</div>';
+                return div;
+              },
+              arcSharpness: 0.1,
+              animationSpeed: 0,
+            });
+
+      }
+
+      $(function () {
+        $('#introduction').dialog({
+          modal:true,
+          width: '90%',
+          hide: { effect: 'slide', duration: 4000 },
+          open: function(event, ui) {
+            // add an image to the title of the dialog
+            $(".ui-dialog-titlebar").append('<img src="emp-logo.svg" height="70px"/>');
+          }
+        });
+        // wait a second before beginning the creation of the map
+        setTimeout(createMap, 1000);
+      });
+    </script>
+  </body>
 
 </html>
