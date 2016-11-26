@@ -1,5 +1,10 @@
 <html>
   <head>
+    <style>
+      .body {
+        background-color: black;
+      }
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="https://d3js.org/topojson.v1.min.js"></script>
@@ -19,12 +24,12 @@
                                                         isNaN(x.destination.latitude) ||
                                                         isNaN(x.destination.longitude))})
 
-    var empColors = {'EMP sample': 'white',
-                     'Host-associated': '#fb9a99',
-                     'Free-living': '#e31a1c',
-                     'Animal': '#b2df8a',
-                     'Plant': '#33a02c',
-                     'Non-saline': '#a6cee3',
+    var empColors = {// 'EMP sample': 'white',
+                     // 'Host-associated': '#fb9a99',
+                     // 'Free-living': '#e31a1c',
+                     // 'Animal': '#b2df8a',
+                     // 'Plant': '#33a02c',
+                     // 'Non-saline': '#a6cee3',
                      'Saline': '#1f78b4',
                      'Aerosol (non-saline)': 'lightgrey',
                      'Animal corpus': 'yellow',
@@ -34,23 +39,25 @@
                      'Animal surface': 'DarkGoldenRod',
                      'Hypersaline (saline)': 'lightskyblue',
                      'Intertidal (saline)': 'PaleTurquoise',
-                     'Mock community': 'fuchsia',
+                     // 'Mock community': 'fuchsia',
                      'Plant corpus': 'lawngreen',
                      'Plant rhizosphere': 'darkgreen',
                      'Plant surface': 'MediumSpringGreen',
                      'Sediment (non-saline)': 'lightsalmon',
                      'Sediment (saline)': 'tomato',
                      'Soil (non-saline)': 'red',
-                     'Sterile water blank': 'violet',
-                     'Surface (non-saline)': 'black',
+                     // 'Sterile water blank': 'violet',
+                     // Tell Luke that I changed black to teal
+                     'Surface (non-saline)': 'teal',
                      'Surface (saline)': 'dimgrey',
                      'Water (non-saline)': 'navy',
                      'Water (saline)': 'royalblue'};
+    var legend = new Legend('main-map', empColors)
 
     var world = new ZDatamaps({
         scope: 'world',
         element: document.getElementById('main-map'),
-        projection: 'mercator',
+        responsive: false,
 
         fills: {
           defaultFill: "black",
@@ -65,7 +72,7 @@
 
     // Arcs coordinates can be specified explicitly with latitude/longtitude,
     // or just the geographic center of the state/country.
-    world.instance.arc([],
+    world.instance.arc(edgeList,
               {strokeWidth: 0.2,
                popupOnHover: true,
                popupTemplate: function(geography, data){

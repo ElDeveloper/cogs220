@@ -206,3 +206,67 @@ ZDatamaps.prototype._handleMapReady = function(datamap) {
     datamap: datamap
   });
 }
+
+/*
+ * Helper class to display color legend information
+ *
+ * Note: This class is still very specific to the EMP colors.
+ *
+ * This class is based on the HTML found here:
+ * http://jsfiddle.net/MTB2q/
+ *
+ **/
+function Legend(element, colors) {
+  var scope = this, list, row;
+
+  this.$container = $('#' + element);
+
+  list = $('<ul></ul>');
+  this.$container.append(list);
+
+  list.css({'list-style':'none',
+            'color': '#6D6E71',
+            'font-family': 'Arial',
+            'font-size': '10px'
+  });
+
+  // make spans
+  _.each(colors, function(color, name){
+    row = $('<li></li>');
+    // FIXME: the fixed width here is dirty and terrible
+    row.css({'float': 'left', 'margin-right': '10px', 'width': '113px'});
+
+    row.append(scope._makeSpan(color));
+    row.append(name);
+
+    list.append(row);
+  });
+
+  this.$list = list;
+
+  this.$canvas = $('<div></div>');
+  this.$canvas.css({'position': 'fixed',
+                    'bottom': '0',
+                    'width': '20%'});
+  this.$canvas.append(list);
+
+  this.$container.append(this.$canvas);
+
+  return this;
+}
+
+/*
+ *
+ * Helper method to create spans with a style, instead of adding a CSS class.
+ *
+ **/
+Legend.prototype._makeSpan = function(color) {
+  var $spn = $('<span></span>');
+  $spn.css({'border': 'none',
+            'float': 'left',
+            'width': '8px',
+            'height': '8px',
+            'margin': '2px',
+            'background-color': color});
+  return $spn;
+};
