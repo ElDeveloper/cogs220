@@ -195,6 +195,7 @@ Zoom.prototype._getNextScale = function(direction) {
 
 function ZDatamaps(options) {
   this.$container = $(options.element);
+  this._done = options.done;
   options.done = this._handleMapReady.bind(this);
 
   this.instance = new Datamaps(options);
@@ -205,6 +206,7 @@ ZDatamaps.prototype._handleMapReady = function(datamap) {
     $container: this.$container,
     datamap: datamap
   });
+  this._done();
 }
 
 /*
