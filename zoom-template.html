@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="vendor/jquery-ui/jquery-ui.min.css">
     <link rel="stylesheet" type="text/css" href="vendor/jquery-ui/jquery-ui.theme.min.css">
     <link rel="stylesheet" type="text/css" href="vendor/jquery-ui/jquery-ui.structure.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/chosen/chosen.min.css">
 
     <script src="vendor/jquery/jquery.js"></script>
     <script src="vendor/jquery-ui/jquery-ui.min.js"></script>
@@ -16,11 +17,12 @@
     <script src="vendor/d3/topojson.v1.min.js"></script>
     <script src="vendor/lodash/lodash.min.js"></script>
 
+    <script src="vendor/chosen/chosen.jquery.min.js"></script>
+
     <script src="datamaps.all.hires.min.js"></script>
     <script src="zoom.js"></script>
   </head>
   <body>
-
     <div id='introduction' style='background-color:#6D6E71;color:white;'>
 
       <h1>HTML Ipsum Presents</h1>
@@ -93,11 +95,25 @@
                        'Water (non-saline)': 'navy',
                        'Water (saline)': 'royalblue',
                        'Mismatch': 'white'};
-
       function createMap() {
-        var legend = new Legend('main-map', empColors);
+        var legend = new Legend('main-map', empColors), world, colors, cont, arcOptions;
 
-        var world = new ZDatamaps({
+        arcOptions = {
+          strokeWidth: 0.2,
+          popupOnHover: true,
+          popupTemplate: function(geography, data){
+            var div = '<div class="hoverinfo">';
+            div += '<strong>From<\/strong>: ' + data.origin.empo_3;
+            div += '<br>'
+              div += '<strong>To<\/strong>: ' + data.destination.empo_3;
+            div += '<\/div>';
+            return div;
+          },
+          arcSharpness: 0.1,
+          animationSpeed: 0
+        };
+
+        world = new ZDatamaps({
           scope: 'world',
           element: document.getElementById('main-map'),
           responsive: false,
@@ -132,21 +148,13 @@
 
         // Arcs coordinates can be specified explicitly with latitude/longtitude,
         // or just the geographic center of the state/country.
-        world.instance.arc(edgeList,{
-          strokeWidth: 0.2,
-          popupOnHover: true,
-          popupTemplate: function(geography, data){
-            var div = '<div class="hoverinfo">';
-            div += '<strong>From</strong>: ' + data.origin.empo_3;
-            div += '<br>'
-              div += '<strong>To</strong>: ' + data.destination.empo_3;
-            div += '</div>';
-            return div;
-          },
-          arcSharpness: 0.1,
-          animationSpeed: 0,
-        });
+        world.instance.arc(edgeList, arcOptions);
 
+        // we don't want people to be able to select "mismatch"
+        colors = _.filter(_.keys(empColors), function(c){
+          return c !== 'Mismatch';
+        });
+        cont = new MatchMaker(document.body, world, edgeList, colors, arcOptions);
       }
 
       $(function () {

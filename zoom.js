@@ -276,3 +276,108 @@ Legend.prototype._makeSpan = function(color) {
             'background-color': color});
   return $spn;
 };
+
+
+function MatchMaker(container, map, edges, categories, arcOptions){
+  var scope = this;
+
+  this.$container = $(container);
+  this.$canvas = $('<div></div>');
+  this.$container.append(this.$canvas);
+  this.$canvas.css({
+    'position': 'absolute',
+    'right': 0,
+    'top': 0,
+    'width': '211px'
+  });
+
+  this.map = map;
+  this.edges = edges;
+
+  this.$a = $('<select name="selector-a">');
+  this.$b = $('<select name="selector-b">');
+
+  this.$canvas.append(this.$a);
+  this.$canvas.append(this.$b);
+
+  this.arcOptions = arcOptions;
+
+  _.each(categories, function(cat){
+    scope.$a.append($('<option>').attr('value', cat).text(cat));
+
+    scope.$b.append($('<option>').attr('value', cat).text(cat));
+  });
+
+  this.$reset = $('<button title="Clear Selection"></button>');
+  this.$canvas.append(this.$reset);
+
+  $(function(){
+    scope.$a.chosen({width: '100%', search_contains: true,
+                     placeholder_text_single: 'Select a Category'});
+    scope.$a.val(null).trigger('chosen:updated').change();
+    scope.$a.chosen().change(_.bind(scope.selectChanged, scope));
+
+    scope.$b.chosen({width: '100%', search_contains: true,
+                     placeholder_text_single: 'Select a Category'});
+    scope.$b.val(null).trigger('chosen:updated').change();
+    scope.$b.chosen().change(_.bind(scope.selectChanged, scope));
+
+    scope.$reset.button({
+      icon: "ui-icon-closethick",
+      showLabel: false
+    });
+    scope.$reset.click(_.bind(scope.resetSelection, scope));
+  });
+
+  return this;
+};
+
+MatchMaker.prototype.selectChanged = function(){
+  var a = this.$a.val(), b = this.$b.val(), opts;
+
+  // nothing to see, moving on
+  if (a === null || b === null) {
+    return;
+  }
+
+  var arcs = _.filter(this.edges, function(arc){
+    var o, d;
+
+    o = arc.origin.empo_3;
+    d = arc.destination.empo_3;
+
+    return (a === o && b === d)  || (a === d && b === o);
+  });
+
+  if (arcs.length === 0) {
+    this.print('No Matches Found'); 
+    return;
+  }
+
+  // FIXME: find a better workaround to this
+  var temp = this.arcOptions.animationSpeed;
+
+  this.arcOptions.animationSpeed = 3;
+  this.map.instance.arc(arcs, opts);
+  this.arcOptions.animationSpeed = temp;
+}
+
+MatchMaker.prototype.resetSelection = function() {
+  this.$a.val(null).trigger('chosen:updated').change();
+  this.$b.val(null).trigger('chosen:updated').change();
+  this.map.instance.arc(this.edges, this.arcOptions);
+}
+
+MatchMaker.prototype.print = function(msg) { 
+  var $msg = $('<div>' + msg + '</div>');
+  $msg.css({
+    'color': 'white',
+    'font-family': 'Arial',
+  });
+
+
+  $msg.show().effect('highlight', {}, 1000).delay(2000).fadeOut(function(){
+    $msg.remove(); 
+  });
+  this.$canvas.append($msg);
+}
