@@ -54,20 +54,10 @@
          <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
          <li>Aliquam tincidunt mauris eu risus.</li>
       </ul>
-
-      <pre><code>
-#header h1 a {
-        display: block;
-        width: 300px;
-        height: 80px;
-      }
-      </code></pre>
-
-
     </div>
     <div id="main-map" style="position: absolute; top:0; left:0; width: 100%; height: 100%; background-color: black;"></div>
     <script>
-      var edgeList = {{ edge_data }};
+      var edgeList = {{ edge_data }}, countries = {{ countries }};
       // filter NaNs
       edgeList = _.filter(edgeList, function(x) {return !(isNaN(x.origin.latitude) ||
                                                           isNaN(x.origin.longitude) ||
@@ -121,27 +111,41 @@
 
           geographyConfig: {
             borderColor: '#6D6E71',
-            highlightFillColor: 'none',
-            highlightBorderColor: '#669b34'
+            highlightFillColor: 'black',
+            highlightBorderColor: '#669b34',
+
+            popupOnHover: true,
+            popupTemplate: function(geo, data){
+
+              var count = countries[geo.properties.name], message = '<b>No</b>';
+
+              if (count !== undefined) {
+                message = count;
+              }
+              message = message + ' Samples Collected in <b>' + geo.properties.name + '</b>.';
+              message = '<div class="hoverinfo">' + message + '</div>';
+
+              return message;
+            }
           }
         });
 
         // Arcs coordinates can be specified explicitly with latitude/longtitude,
         // or just the geographic center of the state/country.
-        world.instance.arc(edgeList,
-            {strokeWidth: 0.2,
-              popupOnHover: true,
-              popupTemplate: function(geography, data){
-                var div = '<div class="hoverinfo">';
-                div += '<strong>From</strong>: ' + data.origin.empo_3;
-                div += '<br>'
-                  div += '<strong>To</strong>: ' + data.destination.empo_3;
-                div += '</div>';
-                return div;
-              },
-              arcSharpness: 0.1,
-              animationSpeed: 0,
-            });
+        world.instance.arc(edgeList,{
+          strokeWidth: 0.2,
+          popupOnHover: true,
+          popupTemplate: function(geography, data){
+            var div = '<div class="hoverinfo">';
+            div += '<strong>From</strong>: ' + data.origin.empo_3;
+            div += '<br>'
+              div += '<strong>To</strong>: ' + data.destination.empo_3;
+            div += '</div>';
+            return div;
+          },
+          arcSharpness: 0.1,
+          animationSpeed: 0,
+        });
 
       }
 

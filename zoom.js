@@ -206,7 +206,9 @@ ZDatamaps.prototype._handleMapReady = function(datamap) {
     $container: this.$container,
     datamap: datamap
   });
-  this._done();
+  if (this._done !== undefined) {
+    this._done();
+  }
 }
 
 /*
@@ -219,7 +221,7 @@ ZDatamaps.prototype._handleMapReady = function(datamap) {
  *
  **/
 function Legend(element, colors) {
-  var scope = this, list, row;
+  var scope = this, list, row, names;
 
   this.$container = $('#' + element);
 
@@ -233,7 +235,9 @@ function Legend(element, colors) {
   });
 
   // make spans
-  _.each(colors, function(color, name){
+  names = _.sortBy(_.keys(colors));
+  _.each(names, function(name){
+    color = colors[name];
     row = $('<li></li>');
     // FIXME: the fixed width here is dirty and terrible
     row.css({'float': 'left', 'margin-right': '10px', 'width': '113px'});
@@ -248,7 +252,7 @@ function Legend(element, colors) {
 
   this.$canvas = $('<div></div>');
   this.$canvas.css({'position': 'fixed',
-                    'bottom': '0',
+                    'bottom': '3px',
                     'width': '20%'});
   this.$canvas.append(list);
 
