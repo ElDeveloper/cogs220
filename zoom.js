@@ -333,7 +333,7 @@ function MatchMaker(container, map, edges, categories, arcOptions){
 };
 
 MatchMaker.prototype.selectChanged = function(){
-  var a = this.$a.val(), b = this.$b.val(), opts;
+  var a = this.$a.val(), b = this.$b.val();
 
   // nothing to see, moving on
   if (a === null || b === null) {
@@ -357,14 +357,17 @@ MatchMaker.prototype.selectChanged = function(){
   // FIXME: find a better workaround to this
   var temp = this.arcOptions.animationSpeed;
 
+  this.map.instance.arc([]);
   this.arcOptions.animationSpeed = 3;
-  this.map.instance.arc(arcs, opts);
+  this.map.instance.arc(arcs, this.arcOptions);
   this.arcOptions.animationSpeed = temp;
 }
 
 MatchMaker.prototype.resetSelection = function() {
   this.$a.val(null).trigger('chosen:updated').change();
   this.$b.val(null).trigger('chosen:updated').change();
+
+  this.map.instance.arc([]);
   this.map.instance.arc(this.edges, this.arcOptions);
 }
 
@@ -375,8 +378,7 @@ MatchMaker.prototype.print = function(msg) {
     'font-family': 'Arial',
   });
 
-
-  $msg.show().effect('highlight', {}, 1000).delay(2000).fadeOut(function(){
+  $msg.show().effect('highlight', {}, 300).delay(2000).fadeOut(function(){
     $msg.remove(); 
   });
   this.$canvas.append($msg);
