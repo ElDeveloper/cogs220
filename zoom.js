@@ -354,13 +354,13 @@ MatchMaker.prototype.selectChanged = function(){
     return;
   }
 
-  // FIXME: find a better workaround to this
-  var temp = this.arcOptions.animationSpeed;
-
-  this.map.instance.arc([]);
-  this.arcOptions.animationSpeed = 3;
-  this.map.instance.arc(arcs, this.arcOptions);
-  this.arcOptions.animationSpeed = temp;
+  // we don't use all the original options, the defaults make the edges
+  // large enough that they can be easily noticed
+  this.map.instance.arc(arcs, {
+    popupOnHover: this.arcOptions.popupOnHover,
+    popupTemplate: this.arcOptions.popupTemplate,
+    arcSharpness: this.arcOptions.arcSharpness * 2
+  });
 }
 
 MatchMaker.prototype.resetSelection = function() {
