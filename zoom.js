@@ -378,8 +378,8 @@ MatchMaker.prototype.print = function(msg) {
     'font-family': 'Arial',
   });
 
-  $msg.show().effect('highlight', {}, 300).delay(2000).fadeOut(function(){
+  $msg.show().delay(3000).fadeOut(function(){
     $msg.remove(); 
   });
-  this.$canvas.append($msg);
+  this.$canvas.prepend($msg);
 }
